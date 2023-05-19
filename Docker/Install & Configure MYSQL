@@ -1,0 +1,44 @@
+To install and configure MySQL Server 5.7 on Docker with public facing, you can follow these steps:
+
+1. **Install Docker**: If you haven't already, install Docker on your system. Docker provides installation instructions for various operating systems on their website.
+
+2. **Pull the MySQL Server 5.7 image**: Open a terminal or command prompt and run the following command to download the MySQL Server 5.7 Docker image from Docker Hub:
+
+   ```
+   docker pull mysql:5.7
+   ```
+
+3. **Run the MySQL container**: Use the following command to run a MySQL container and configure it:
+
+   ```
+   docker run -d --name mymysql -e MYSQL_ROOT_PASSWORD=mysecretpassword -p 3306:3306 mysql:5.7
+   ```
+
+   This command does the following:
+
+   - `-d`: Runs the container in detached mode.
+   - `--name mymysql`: Specifies a name for the container (you can choose any name).
+   - `-e MYSQL_ROOT_PASSWORD=mysecretpassword`: Sets the root password for MySQL (replace "mysecretpassword" with your desired password).
+   - `-p 3306:3306`: Maps the container's MySQL port (3306) to the host system's port (also 3306).
+
+4. **Verify the installation**: Run the following command to see if the MySQL container is running:
+
+   ```
+   docker ps
+   ```
+
+   You should see the "mymysql" container listed.
+
+5. **Connect to the MySQL container**: You can connect to the MySQL container using a MySQL client. For example, you can use the MySQL command-line client with the following command:
+
+   ```
+   mysql -h 127.0.0.1 -P 3306 -u root -p
+   ```
+
+   Enter the root password you set earlier when prompted.
+
+6. **Enable public access**: By default, the MySQL container is only accessible from within the host system. To enable public access, you need to configure firewall rules and network settings on your host machine to allow incoming connections on port 3306.
+
+   Note: Exposing your MySQL container publicly can pose security risks. It is strongly recommended to apply proper security measures, such as firewall rules, authentication, and SSL/TLS encryption, to protect your database from unauthorized access.
+
+With these steps, you have installed and configured MySQL Server 5.7 on Docker. However, please be cautious about the security implications of making your database publicly accessible and ensure you have appropriate security measures in place.

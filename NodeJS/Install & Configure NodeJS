@@ -1,0 +1,55 @@
+To install Node.js version 14 on Ubuntu 22.04 using NVM (Node Version Manager), you can follow these steps:
+
+1. Update your Ubuntu system's package lists by running the following command:
+
+   ```
+   sudo apt update
+   ```
+
+2. Install NVM by running the following command:
+
+   ```
+   curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash
+   ```
+
+   This command will download and execute the NVM installation script.
+
+3. Close and reopen your terminal, or run the following command to load NVM:
+
+   ```
+   source ~/.bashrc
+   ```
+
+4. Verify that NVM is installed correctly by running the following command:
+
+   ```
+   nvm --version
+   ```
+
+   It should display the version of NVM installed.
+
+5. Install Node.js version 14 using NVM:
+
+   ```
+   nvm install 14
+   ```
+
+   This command will download and install Node.js version 14.
+
+6. Verify that Node.js version 14 is installed by running the following command:
+
+   ```
+   node --version
+   ```
+
+   It should display the version number starting with `v14`.
+
+7. You can also set Node.js version 14 as the default version by running:
+
+   ```
+   nvm alias default 14
+   ```
+
+   This command will set Node.js version 14 as the default version that will be used when opening new terminal sessions.
+
+That's it! You have successfully installed Node.js version 14 on Ubuntu 22.04 using NVM. You can now use Node.js 14 for your development projects.
