@@ -1,0 +1,45 @@
+To install and configure MariaDB on Docker, you can follow these steps:
+
+1. **Install Docker**: If you haven't already, install Docker on your system. Docker provides installation instructions for various operating systems on their website.
+
+2. **Pull the MariaDB image**: Open a terminal or command prompt and run the following command to download the official MariaDB Docker image from Docker Hub:
+
+   ```
+   docker pull mariadb
+   ```
+
+3. **Create a Docker volume**: A Docker volume is used to persistently store MariaDB data. Run the following command to create a Docker volume named "mydatabase":
+
+   ```
+   docker volume create mydatabase
+   ```
+
+4. **Run the MariaDB container**: Use the following command to run a MariaDB container and configure it:
+
+   ```
+   docker run -d --name mymariadb -e MYSQL_ROOT_PASSWORD=mysecretpassword -v mydatabase:/var/lib/mysql -p 3306:3306 mariadb
+   ```
+
+   This command does the following:
+
+   - `-d`: Runs the container in detached mode.
+   - `--name mymariadb`: Specifies a name for the container (you can choose any name).
+   - `-e MYSQL_ROOT_PASSWORD=mysecretpassword`: Sets the root password for MariaDB (replace "mysecretpassword" with your desired password).
+   - `-v mydatabase:/var/lib/mysql`: Mounts the "mydatabase" Docker volume to the container's data directory.
+   - `-p 3306:3306`: Maps the container's MySQL port (3306) to the host system's port (also 3306).
+
+5. **Verify the installation**: Run the following command to see if the MariaDB container is running:
+
+   ```
+   docker ps
+   ```
+
+   You should see the "mymariadb" container listed.
+
+6. **Connect to the MariaDB container**: You can connect to the MariaDB container using a MySQL client. For example, you can use the MySQL command-line client with the following command:
+   ```
+   mysql -h 127.0.0.1 -P 3306 -u root -p
+   ```
+   Enter the root password you set earlier when prompted.
+
+That's it! You have successfully installed and configured MariaDB on Docker. You can now use the container for your database needs. Remember that the data will be persisted in the Docker volume you created, so even if you stop or remove the container, the data will be preserved in the volume.
