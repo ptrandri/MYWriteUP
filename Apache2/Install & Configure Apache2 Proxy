@@ -1,0 +1,45 @@
+Step 1 — Enabling Necessary Apache Modules
+Apache has many modules bundled with it that are available but not enabled in a fresh installation. First, you’ll need to enable the ones you’ll use in this tutorial.
+
+The modules you need are mod_proxy itself and several of its add-on modules, which extend its functionality to support different network protocols. Specifically, you will use:
+
+mod_proxy, the main proxy module Apache module for redirecting connections; it allows Apache to act as a gateway to the underlying application servers.
+mod_proxy_http, which adds support for proxying HTTP connections.
+mod_proxy_balancer and mod_lbmethod_byrequests, which add load balancing features for multiple backend servers.
+To enable these four modules, execute the following commands in succession.
+
+# sudo a2enmod proxy
+
+# sudo a2enmod proxy_http
+
+# sudo a2enmod proxy_balancer
+
+# sudo a2enmod lbmethod_byrequests
+
+# To put these changes into effect, restart Apache.
+
+# sudo systemctl restart apache2
+
+Apache is now ready to act as a reverse proxy for HTTP requests. In the next (optional) step, you will create two very basic backend servers. These will help us verify if the configuration works properly, but if you already have your own backend application(s), you can skip to Step 3.
+
+Example 1 — Reverse Proxying a Single Backend Server
+Replace all the contents within VirtualHost block with the following, so that your configuration file looks like this:
+
+nano /etc/apache2/sites-available/000-default.conf
+
+<VirtualHost \*:80>
+ProxyPreserveHost On
+ProxyPass / http://127.0.0.1:8080/
+ProxyPassReverse / http://127.0.0.1:8080/
+</VirtualHost>
+
+If you’ve followed along with the example servers in Step 2, use 127.0.0.1:8080 as written in the block above. If you have your own application servers, use their addresses instead.
+
+There are three directives here:
+
+ProxyPreserveHost makes Apache pass the original Host header to the backend server. This is useful, as it makes the backend server aware of the address used to access the application.
+ProxyPass is the main proxy configuration directive. In this case, it specifies that everything under the root URL (/) should be mapped to the backend server at the given address. For example, if Apache gets a request for /example, it will connect to http://your_backend_server/example and return the response to the original client.
+ProxyPassReverse should have the same configuration as ProxyPass. It tells Apache to modify the response headers from the backend server. This makes sure that if the backend server returns a location redirect header, the client’s browser will be redirected to the proxy address and not the backend server address, which would not work as intended.
+To put these changes into effect, restart Apache.
+
+sudo systemctl restart apache2
