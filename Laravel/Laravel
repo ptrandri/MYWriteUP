@@ -1,0 +1,7 @@
+How to secure Laravel Folder Permission
+# chmod -R 755 /var/www/html/dev-tickdesk
+# chmod 644 /var/www/html/dev-tickdesk/config/database.php
+# hown -R www-data:www-data /var/www/html/dev-tickdesk 
+# chmod -R 775 /var/www/html/dev-tickdesk/storage
+# chmod -R 775 /var/www/html/dev-tickdesk/bootstrap/cache
+# chmod -R 775 /var/www/html/dev-tickdesk/storage/framework/sessions
