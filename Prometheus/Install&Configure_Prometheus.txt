@@ -1,0 +1,82 @@
+1) Use wget to download Prometheus to the monitoring server. 
+    # wget https://github.com/prometheus/prometheus/releases/download/v2.37.6/prometheus-2.37.6.linux-amd64.tar.gz
+
+2) Extract the archived Prometheus files.
+    # tar xvfz prometheus-*.tar.gz
+
+3) delete the archive or move it to a different location for storage
+    # rm prometheus-*.tar.gz
+
+4) sudo mkdir /etc/prometheus /var/lib/prometheus
+
+5) cd prometheus-2.37.6.linux-amd64
+
+6) sudo mv prometheus promtool /usr/local/bin/
+
+7) mkdir /etc/prometheus
+
+8) sudo mv prometheus.yml /etc/prometheus/prometheus.yml
+
+9) sudo mv consoles/ console_libraries/ /etc/prometheus/
+
+10) prometheus --version
+    prometheus, version 2.37.6 (branch: HEAD, revision: 8ade24a23af6be0f35414d6e8ce09598446c29a2)
+    build user:       root@5f96027a7c3e
+    build date:       20230220-09:36:40
+    go version:       go1.19.6
+    platform:         linux/amd64
+
+#####################################################################################################
+
+How to Configure Prometheus as a Service
+Create a prometheus user. The following command creates a system user.
+
+1)  sudo useradd -rs /bin/false prometheus
+2)  sudo chown -R prometheus: /etc/prometheus /var/lib/prometheus
+
+3) sudo nano /etc/systemd/system/prometheus.service
+File: /etc/systemd/system/prometheus.service
+[Unit]
+Description=Prometheus
+Wants=network-online.target
+After=network-online.target
+
+[Service]
+User=prometheus
+Group=prometheus
+Type=simple
+Restart=on-failure
+RestartSec=5s
+ExecStart=/usr/local/bin/prometheus \
+    --config.file /etc/prometheus/prometheus.yml \
+    --storage.tsdb.path /var/lib/prometheus/ \
+    --web.console.templates=/etc/prometheus/consoles \
+    --web.console.libraries=/etc/prometheus/console_libraries \
+    --web.listen-address=0.0.0.0:9090 \
+    --web.enable-lifecycle \
+    --log.level=info
+
+[Install]
+WantedBy=multi-user.target
+
+4)  sudo systemctl daemon-reload
+5)  sudo systemctl enable prometheus
+6)  sudo systemctl start prometheus
+7)  sudo systemctl status prometheus
+
+
+#####################################################################################################
+
+sudo nano /etc/prometheus/prometheus.yml
+File: /etc/prometheus/prometheus.yml
+...
+- job_name: "remote_collector"
+  scrape_interval: 10s
+  static_configs:
+    - targets: ["remote_addr:9100"]
+
+sudo systemctl restart prometheus
+
+
+
+
