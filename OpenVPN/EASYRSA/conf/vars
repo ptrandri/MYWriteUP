@@ -1,0 +1,8 @@
+set_var EASYRSA_REQ_COUNTRY    "ID"
+set_var EASYRSA_REQ_PROVINCE   "KEPRI"
+set_var EASYRSA_REQ_CITY       "BATAM"
+set_var EASYRSA_REQ_ORG        "NSA-DEV"
+set_var EASYRSA_REQ_EMAIL      "admin@gmail.com"
+set_var EASYRSA_REQ_OU         "Community"
+set_var EASYRSA_ALGO           "ec"
+set_var EASYRSA_DIGEST         "sha512"

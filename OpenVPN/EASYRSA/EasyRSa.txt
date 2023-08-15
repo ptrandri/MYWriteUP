@@ -1,0 +1,29 @@
+# apt update
+# apt install openvpn easy-rsa
+
+$ mkdir ~/easy-rsa
+$ ln -s /usr/share/easy-rsa/* ~/easy-rsa/
+$ chmod /home/$username/easy-rsa
+$ cd ~/easy-rsa
+
+# Generate the Certificate Authority (CA) Certificate and Key
+$ ./easyrsa init-pki
+$ cd ~/easy-rsa
+$ nano vars
+  look the vars file on: OpenVPN\EASYRSA\conf\vars
+$ ./easyrsa build-ca
+
+# Generate Diffie Hellman Parameters
+$ ./easyrsa gen-dh
+
+# Generate OpenVPN Server Certificate and Key
+$ ./easyrsa build-server-full server nopass
+
+# Generate Hash-based Message Authentication Code (HMAC) key
+$ openvpn --genkey secret pki/ta.key
+
+# Copy Server Certificates and Keys to Server Config Directory
+$ sudo cp -rp /etc/easy-rsa/pki/{ca.crt,dh.pem,ta.key,crl.pem,issued,private} /etc/openvpn/server/
+
+
+

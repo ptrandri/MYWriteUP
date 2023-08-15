@@ -1,0 +1,13 @@
+1. create your server.conf file configuration
+   nano /etc/openvpn/server.conf
+   file: /etc/openvpn/server.conf
+   Please look the file configuration here: OpenVPN\SERVER\conf\server.conf
+
+2. Activate your NAT & Firewall
+   # iptables -t nat -A POSTROUTING -s $TunnelAdd -o $AddInternet -j MASQUERADE
+   # iptables -t nat -A POSTROUTING -s 10.8.0.0/24 -o eth0 -j MASQUERADE
+
+3. start, restart, and enable your vpn services
+    # systemctl start openvpn@server
+    # systemctl restart openvpn@server
+    # systemctl enable openvpn@server
