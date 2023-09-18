@@ -1,0 +1,75 @@
+version: '3'
+services:
+  mongo:
+    container_name: mongo
+    image: mongo:5.0.13
+    networks:
+      - graylog
+    ports:
+      - 27017:27017
+
+  elasticsearch:
+    container_name: elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch-oss:7.10.2
+    environment:
+      - http.host=0.0.0.0
+      - transport.host=localhost
+      - network.host=0.0.0.0
+      - discovery.type=single-node
+      - 'ES_JAVA_OPTS=-Dlog4j2.formatMsgNoLookups=true -Xms512m -Xmx512m'
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    deploy:
+      resources:
+        limits:
+          memory: 1g
+    volumes:
+      - es_data:/usr/share/elasticsearch/data
+    ports:
+      - 9201:9200
+    networks:
+      - graylog
+
+  graylog:
+    container_name: graylog
+    image: graylog/graylog:5.1
+    environment:
+      # CHANGE ME (must be at least 16 characters)!
+      - TZ=Asia/Jakarta
+      - GRAYLOG_PASSWORD_SECRET=somepasswordpepper
+      - GRAYLOG_ROOT_TIMEZONE=Asia/Jakarta
+      # Password: admin
+      - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
+      - GRAYLOG_HTTP_EXTERNAL_URI=http://127.0.0.1:9090/ # Ubah port dari 9000 menjadi 9090
+    volumes:
+      - graylog_data:/usr/share/graylog/data
+    entrypoint: /usr/bin/tini -- wait-for-it elasticsearch:9200 --  /docker-entrypoint.sh
+    networks:
+      - graylog
+    restart: always
+    depends_on:
+      - mongo
+      - elasticsearch
+    ports:
+      # Graylog web interface and REST API
+      - 9090:9000
+      # Syslog TCP
+      - 1514:1514
+      # Syslog UDP
+      - 1514:1514/udp
+      # GELF TCP
+      - 12201:12201
+      # GELF UDP
+      - 12201:12201/udp
+
+volumes:
+  mongodb_data:
+  mongodb_configdb:
+  es_data:
+  graylog_data:
+
+networks:
+  graylog:
+    driver: bridge
